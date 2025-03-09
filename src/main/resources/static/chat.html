@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with AI Resume Assistant</title>
+</head>
+<body>
+    <h2>Chat with AI</h2>
+    <div id="chat-box" style="border:1px solid black; padding:10px; height:300px; overflow:auto;"></div>
+    
+    <input type="text" id="user-input" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            let userInput = document.getElementById("user-input").value;
+            let chatBox = document.getElementById("chat-box");
+
+            fetch("http://localhost:8082/chat/message", { // ✅ FIXED URL
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ 
+                    userInput: userInput,
+                    resumeText: "Your Resume Content Here",
+                    jobDescription: "Your Job Description Here"
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                chatBox.innerHTML += `<p><b>You:</b> ${userInput}</p>`;
+                chatBox.innerHTML += `<p><b>AI:</b> ${data}</p>`;
+                document.getElementById("user-input").value = ""; // Clear input field
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
